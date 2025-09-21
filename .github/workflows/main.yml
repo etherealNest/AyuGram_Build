@@ -1,0 +1,77 @@
+name: Build AyuGramDesktop on Windows
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          
+      - name: Clone AyuGram
+        run: |
+          git clone --recursive https://github.com/AyuGram/AyuGramDesktop.git tdesktop
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Cache third-party libraries
+        id: cache-libs
+        uses: actions/cache@v4
+        with:
+          path: |
+            tdesktop/ThirdParty
+            tdesktop/Libraries
+          key: ${{ runner.os }}-libs-${{ hashFiles('tdesktop/Telegram/build/prepare/prepare.py') }}
+          restore-keys: |
+            ${{ runner.os }}-libs-
+
+      - name: Prepare libraries (if cache not found)
+        if: steps.cache-libs.outputs.cache-hit != 'true'
+        working-directory: tdesktop
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          Telegram\build\prepare\win.bat
+        shell: cmd
+
+      - name: Configure project
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          configure.bat x64 -D TDESKTOP_API_ID=2040 -D TDESKTOP_API_HASH=b18441a1ff607e10a989891a5462e627
+        working-directory: tdesktop/Telegram
+        shell: cmd
+
+      - name: Build solution (Release)
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          msbuild Telegram.sln /p:Configuration=Release
+        working-directory: tdesktop/Telegram/out
+        shell: cmd
+        
+      - name: Build solution (Debug)
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          msbuild Telegram.sln /p:Configuration=Debug
+        working-directory: tdesktop/Telegram/out
+        shell: cmd
+
+      - name: Upload Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AyuGram-Release
+          path: tdesktop/Telegram/out/Release/AyuGram.exe
+
+      - name: Upload Debug Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AyuGram-Debug
+          path: tdesktop/Telegram/out/Debug/AyuGram.exe
