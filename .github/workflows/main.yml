@@ -29,10 +29,10 @@ jobs:
         id: cache-libs
         uses: actions/cache@v4
         with:
+          # Пути относительно корня, БЕЗ tdesktop.
           path: |
-            tdesktop/ThirdParty
-            tdesktop/Libraries/win64
-          #   ^-- ПУТЬ ИСПРАВЛЕН СОГЛАСНО ВАШЕМУ СКРИПТУ
+            ThirdParty
+            Libraries/win64
           key: ${{ runner.os }}-libs-${{ hashFiles('tdesktop/Telegram/build/prepare/prepare.py') }}
           restore-keys: |
             ${{ runner.os }}-libs-
@@ -42,7 +42,8 @@ jobs:
         working-directory: tdesktop
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          Telegram\build\prepare\win.bat
+          # Запускаем скрипт с параметром 'silent' для неинтерактивного режима
+          Telegram\build\prepare\win.bat silent
         shell: cmd
 
       - name: Проверка созданных файлов
