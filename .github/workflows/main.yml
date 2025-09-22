@@ -48,35 +48,35 @@ jobs:
         run: dir /s tdesktop
         shell: cmd
 
-#      - name: Configure project
-#        run: |
-#          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-#          configure.bat x64 -D TDESKTOP_API_ID=2040 -D TDESKTOP_API_HASH=b18441a1ff607e10a989891a5462e627
-#        working-directory: tdesktop/Telegram
-#        shell: cmd
-#
-#      - name: Build solution (Release)
-#        run: |
-#          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-#          msbuild Telegram.sln /p:Configuration=Release
-#        working-directory: tdesktop/Telegram/out
-#        shell: cmd
-#        
-#      - name: Build solution (Debug)
-#        run: |
-#          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-#          msbuild Telegram.sln /p:Configuration=Debug
-#        working-directory: tdesktop/Telegram/out
-#        shell: cmd
-#
-#      - name: Upload Release Artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: AyuGram-Release
-#          path: tdesktop/Telegram/out/Release/AyuGram.exe
-#
-#      - name: Upload Debug Artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: AyuGram-Debug
-#          path: tdesktop/Telegram/out/Debug/AyuGram.exe
+      - name: Configure project
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          configure.bat x64 -D TDESKTOP_API_ID=2040 -D TDESKTOP_API_HASH=b18441a1ff607e10a989891a5462e627
+        working-directory: tdesktop/Telegram
+        shell: cmd
+
+      - name: Build solution (Release)
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          msbuild Telegram.sln /p:Configuration=Release
+        working-directory: tdesktop/Telegram/out
+        shell: cmd
+        
+      - name: Build solution (Debug)
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          msbuild Telegram.sln /p:Configuration=Debug
+        working-directory: tdesktop/Telegram/out
+        shell: cmd
+
+      - name: Upload Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AyuGram-Release
+          path: tdesktop/Telegram/out/Release/AyuGram.exe
+
+      - name: Upload Debug Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AyuGram-Debug
+          path: tdesktop/Telegram/out/Debug/AyuGram.exe
